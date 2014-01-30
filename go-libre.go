@@ -16,6 +16,8 @@ package main
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/workdir/UnoApiHeadersTarget/udkapi/normal
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/workdir/UnoApiHeadersTarget/offapi/normal
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/workdir/CustomTarget/officecfg/registry
+  #cgo CXXFLAGS: -I/data/dev/libreoffice/core/include/framework
+
 
   #cgo LDFLAGS: -L/data/dev/libreoffice/core/workDir/LinkTarget/StaticLibrary 
   #cgo LDFLAGS: -L/data/dev/libreoffice/core/workDir/LinkTarget/Library 
@@ -25,8 +27,12 @@ package main
   #cgo LDFLAGS: -L/usr/local/lib/harbour 
   #cgo LDFLAGS: -lpq -lharbour -lsclo -lscuilo
   #cgo LDFLAGS: -licuuc  -lxml2 
-  #cgo LDFLAGS: -lavmedialo -lbasegfxlo -lcomphelper -luno_cppu -luno_cppuhelpergcc3 -ldrawinglayerlo -leditenglo -lforlo -lforuilo -li18nlangtag -lmsfilterlo -looxlo -luno_sal -luno_salhelpergcc3 -lsaxlo -lsblo -lsclo -lsfxlo -lsotlo -lsvllo -lsvtlo -lsvxlo -lsvxcorelo -ltllo -ltklo -lucbhelper -lutllo -lvbahelperlo -lvcllo -lxolo
-
+  #cgo LDFLAGS: -lavmedialo -lbasegfxlo -lcomphelper -ldrawinglayerlo -leditenglo -lforlo -lforuilo -li18nlangtag -lmsfilterlo -looxlo -lsaxlo -lsblo -lsclo -lsfxlo -lsotlo -lsvllo -lsvtlo -lsvxlo -lsvxcorelo -ltllo -ltklo -lucbhelper -lutllo -lvbahelperlo -lvcllo -lxolo
+  #cgo LDFLAGS: -lsofficeapp  -lfwelo -lfwilo -lfwklo -lfwllo -lfwmlo
+  #cgo LDFLAGS: -lxmlreaderlo -lxmlscriptlo
+  #cgo LDFLAGS: -lvclcanvaslo -lvclplug_gtklo -lvclplug_svplo -ldesktop_detectorlo -ldesktop_detectorlo
+  #cgo LDFLAGS: -li18nutil -l:libicudata.so.52 -l:libicui18n.so.52 -l:libicuuc.so.52
+  #cgo LDFLAGS: -luno_cppu -luno_cppuhelpergcc3 -lunoidllo  -luno_sal -luno_salhelpergcc3 -lbinaryurplo -lreglo -lstorelo 
 */
 import "C"
 
