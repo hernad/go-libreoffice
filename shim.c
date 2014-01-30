@@ -41,6 +41,7 @@ SAL_DLLPUBLIC_EXPORT LibreOffice *lo_init( const char *install_path )
 
     strcpy( imp_lib, install_path );
     strcat( imp_lib, "/" );
+    //libsofficeapp.so
     strcat( imp_lib, TARGET_LIB );
 
     if( !( dlhandle = dlopen( imp_lib, RTLD_LAZY ) ) )

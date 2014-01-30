@@ -257,6 +257,7 @@ extern "C" int lo_main ()
     }
 */
 
+    // shim.c
     LibLibreOffice *pOffice = lo_cpp_init( "/usr/local/lib/libreoffice/program" );
     if( !pOffice )
     {
@@ -293,13 +294,18 @@ extern "C" int lo_main ()
     //start = end;
 
 /*
-    if( argc > 3 )
-    {
-        const char *pFilter = NULL;
-        if( argc > 4 )
-            pFilter = argv[4];
-        fprintf( stderr, "save document as '%s' (%s)\n", argv[3], pFilter ? pFilter : "<null>" );
-        if( !pDocument->saveAs( argv[3], pFilter ) )
+        // Force headless
+        rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "svp" );
+        InitVCL();
+        Application::EnableHeadlessMode(true);
+
+        ErrorHandler::RegisterDisplay( aBasicErrorFunc );
+*/
+
+       const char *pFilter = NULL;
+        pFilter = "pdf";
+        fprintf( stderr, "save document as '%s' (%s)\n", "test.pdf", pFilter ? pFilter : "<null>" );
+        if( !pDocument->saveAs( "test.pdf", pFilter ) )
         {
             char *pError = pOffice->getError();
             fprintf( stderr, "failed to save document '%s'\n", pError);
@@ -307,11 +313,13 @@ extern "C" int lo_main ()
         }
         else
         {
-            fprintf( stderr, "Save succeeded\n" );
-            end = getTimeMS();
-            fprintf( stderr, "save time: %ld ms\n", (end-start) );
+            fprintf( stderr, "Save pdf succeeded\n" );
         }
-    }
+  
+/*
+    if( argc > 3 )
+    {
+   }
 */
     fprintf( stderr, "all tests passed.\n" );
 
