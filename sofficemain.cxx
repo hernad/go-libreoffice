@@ -43,16 +43,24 @@
 #include <touch/touch.h>
 #endif
 
+#include <stdio.h>
+
 int SVMain();
 
 extern "C" int DESKTOP_DLLPUBLIC soffice_main()
 {
+
+    printf("start soffice_main\n");
 #if defined ANDROID
     try {
         rtl::Bootstrap::setIniFilename("file:///assets/program/lofficerc");
 #endif
-    tools::extendApplicationEnvironment();
 
+#ifndef GOLANG
+    tools::extendApplicationEnvironment();
+#endif
+
+    printf("soffice_main-2\n");
     SAL_INFO("desktop.app", "PERFORMANCE - enter Main()" );
 
     desktop::Desktop aDesktop;
@@ -82,6 +90,8 @@ extern "C" int DESKTOP_DLLPUBLIC soffice_main()
         return EXIT_SUCCESS;
     }
 #endif
+
+    printf("soffice_main-3\n");
     return SVMain();
 #if defined ANDROID
     } catch (const ::com::sun::star::uno::Exception &e) {
