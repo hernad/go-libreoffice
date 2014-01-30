@@ -1531,10 +1531,12 @@ int Desktop::Main()
         if ( bAbort )
             return EXIT_FAILURE;
 
+#ifndef GOLANG
         if (inst_fin == userinstall::CREATED)
         {
             Migration::migrateSettingsIfNecessary();
         }
+#endif
 #endif
 
         // keep a language options instance...

@@ -1,7 +1,7 @@
 package main
 
 /*
-
+  #cgo CXXFLAGS: -DGOLANG
   #cgo CXXFLAGS: -DCPPU_ENV=gcc3 -DLIBO_INTERNAL_ONLY -DLINUX -DNDEBUG -DOPTIMIZE -DOSL_DEBUG_LEVEL=0 -DSUPD=430 -DUNIX -DUNX -DX86_64 -D_PTHREADS -D_REENTRANT  
   #cgo CXXFLAGS: -DRTL_USING   -DSC_DLLIMPLEMENTATION  -DSYSTEM_LIBXML   -DHAVE_GCC_VISIBILITY_FEATURE 
   #cgo CXXFLAGS: -fvisibility=hidden   -Wall -Wendif-labels -Wextra -Wundef -Wunused-macros -fmessage-length=0 -fno-common -pipe  -fvisibility-inlines-hidden -fPIC -Wshadow -Woverloaded-virtual  -Wnon-virtual-dtor -std=gnu++11  -DEXCEPTIONS_ON -fexceptions -fno-enforce-eh-specs -O2
@@ -18,7 +18,6 @@ package main
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/workdir/CustomTarget/officecfg/registry
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/include/framework
 
-
   #cgo LDFLAGS: -L/data/dev/libreoffice/core/workDir/LinkTarget/StaticLibrary 
   #cgo LDFLAGS: -L/data/dev/libreoffice/core/workDir/LinkTarget/Library 
   #cgo LDFLAGS: -L/usr/local/lib/libreoffice/program 
@@ -30,12 +29,17 @@ package main
   #cgo LDFLAGS: -lavmedialo -lbasegfxlo -lcomphelper -ldrawinglayerlo -leditenglo -lforlo -lforuilo -li18nlangtag -lmsfilterlo -looxlo -lsaxlo -lsblo -lsclo -lsfxlo -lsotlo -lsvllo -lsvtlo -lsvxlo -lsvxcorelo -ltllo -ltklo -lucbhelper -lutllo -lvbahelperlo -lvcllo -lxolo
   #cgo LDFLAGS: -lsofficeapp  -lfwelo -lfwilo -lfwklo -lfwllo -lfwmlo
   #cgo LDFLAGS: -lxmlreaderlo -lxmlscriptlo
-  #cgo LDFLAGS: -lvclcanvaslo -lvclplug_gtklo -lvclplug_svplo -ldesktop_detectorlo -ldesktop_detectorlo
+  #cgo LDFLAGS: -lvclcanvaslo -lcppcanvaslo -lcanvastoolslo
+  #cgo LDFLAGS:  -lvclplug_gtklo -lvclplug_svplo -ldesktop_detectorlo -ldesktop_detectorlo
   #cgo LDFLAGS: -li18nutil -l:libicudata.so.52 -l:libicui18n.so.52 -l:libicuuc.so.52
   #cgo LDFLAGS: -luno_cppu -luno_cppuhelpergcc3 -lunoidllo  -luno_sal -luno_salhelpergcc3 -lbinaryurplo -lreglo -lstorelo 
+  #cgo LDFLAGS: -lstdc++ -lm
 */
 import "C"
 
+import (
+  "fmt"
+)
 
 //  $W/UnpackedTarball/liborcus/src/liborcus/.libs/liborcus-0.6.a  $W/UnpackedTarball/liborcus/src/parser/.libs/liborcus-parser-0.6.a  
 func main() {
