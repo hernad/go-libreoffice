@@ -23,6 +23,7 @@ SAL_DLLPUBLIC_EXPORT LibreOfficeG *libsoffice_init( const char *install_path )
     void *dlhandle;
     HookFunction *pSym;
 
+/*
     printf("libsoffice_init loads shared library with liblibreoffice_hook function\n");
 
     if( !install_path )
@@ -49,7 +50,9 @@ SAL_DLLPUBLIC_EXPORT LibreOfficeG *libsoffice_init( const char *install_path )
         printf("nasao liblibreoffice_hook\n");
 
     free( imp_lib );
-    printf("return liblibreoffice_hook symbol\n");
+*/
+    pSym = libreoffice_hook_g;
+    printf("return liblibreoffice_hook symbol_g\n");
     return pSym();
 }
 

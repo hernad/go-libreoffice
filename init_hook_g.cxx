@@ -13,7 +13,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "liblibreoffice.h"
 
 #include <tools/errinf.hxx>
 #include <osl/file.hxx>
@@ -37,6 +36,8 @@
 #include <tools/resmgr.hxx>
 #include <vcl/graphicfilter.hxx>
 #include <unotools/syslocaleoptions.hxx>
+
+#include "libre.h"
 
 using namespace ::com::sun::star;
 
@@ -121,45 +122,45 @@ static OUString getAbsoluteURL( const char *pURL )
 
 extern "C" {
 
-SAL_DLLPUBLIC_EXPORT LibreOffice *liblibreoffice_hook(void);
+SAL_DLLPUBLIC_EXPORT LibreOfficeG *liblibreoffice_hook_g(void);
 
-static void doc_destroy( LibreOfficeDocument *pThis );
-static int  doc_saveAs( LibreOfficeDocument *pThis, const char *pUrl, const char *pFormat );
+static void doc_destroy( LibreOfficeDocumentG *pThis );
+static int  doc_saveAs( LibreOfficeDocumentG *pThis, const char *pUrl, const char *pFormat );
 
-struct LibLODocument_Impl : public _LibreOfficeDocument
+struct LibLODocument_Impl : public _LibreOfficeDocumentG
 {
     uno::Reference < css::lang::XComponent > mxComponent;
 
     LibLODocument_Impl( const uno::Reference < css::lang::XComponent > &xComponent )
             : mxComponent( xComponent )
     {
-        nSize = sizeof( LibreOffice );
+        nSize = sizeof( LibreOfficeG );
 
         destroy = doc_destroy;
         saveAs = doc_saveAs;
     }
 };
 
-static void doc_destroy( LibreOfficeDocument *pThis )
+static void doc_destroy( LibreOfficeDocumentG *pThis )
 {
     LibLODocument_Impl *pDocument = static_cast< LibLODocument_Impl *>( pThis );
     delete pDocument;
 }
 
-static void                 lo_destroy       (LibreOffice *pThis);
-static int                  lo_initialize    (LibreOffice *pThis,
+static void                 lo_destroy       (LibreOfficeG *pThis);
+static int                  lo_initialize    (LibreOfficeG *pThis,
                                               const char *pInstallPath);
-static LibreOfficeDocument *lo_documentLoad  (LibreOffice *pThis,
+static LibreOfficeDocumentG *lo_documentLoad  (LibreOfficeG *pThis,
                                               const char *pURL);
-static char *               lo_getError      (LibreOffice *pThis);
+static char *               lo_getError      (LibreOfficeG *pThis);
 
-struct LibLibreOffice_Impl : public _LibreOffice
+struct LibLibreOffice_Impl : public _LibreOfficeG
 {
     rtl::OUString maLastExceptionMsg;
 
     LibLibreOffice_Impl()
     {
-        nSize = sizeof( LibreOfficeDocument );
+        nSize = sizeof( LibreOfficeDocumentG );
 
         destroy = lo_destroy;
         initialize = lo_initialize;
@@ -173,8 +174,8 @@ static uno::Reference<css::uno::XComponentContext> xContext;
 static uno::Reference<css::lang::XMultiServiceFactory> xSFactory;
 static uno::Reference<css::lang::XMultiComponentFactory> xFactory;
 
-static LibreOfficeDocument *
-lo_documentLoad( LibreOffice *pThis, const char *pURL )
+static LibreOfficeDocumentG *
+lo_documentLoad( LibreOfficeG *pThis, const char *pURL )
 {
     LibLibreOffice_Impl *pLib = static_cast< LibLibreOffice_Impl *>( pThis );
 
@@ -200,7 +201,7 @@ lo_documentLoad( LibreOffice *pThis, const char *pURL )
 }
 
 static int
-doc_saveAs( LibreOfficeDocument *pThis,
+doc_saveAs( LibreOfficeDocumentG *pThis,
             const char *url, const char *format )
 {
     LibLODocument_Impl *pDocument = static_cast< LibLODocument_Impl *>( pThis );
@@ -285,7 +286,7 @@ doc_saveAs( LibreOfficeDocument *pThis,
 }
 
 static char *
-lo_getError (LibreOffice *pThis)
+lo_getError (LibreOfficeG *pThis)
 {
     LibLibreOffice_Impl *pLib = static_cast< LibLibreOffice_Impl *>( pThis );
     OString aStr = rtl::OUStringToOString( pLib->maLastExceptionMsg, RTL_TEXTENCODING_UTF8 );
@@ -343,7 +344,7 @@ initialize_uno( const OUString &aAppURL )
 }
 
 static int
-lo_initialize( LibreOffice *pThis, const char *app_path )
+lo_initialize( LibreOfficeG *pThis, const char *app_path )
 {
     (void) pThis;
 
@@ -384,17 +385,17 @@ lo_initialize( LibreOffice *pThis, const char *app_path )
     return bInitialized;
 }
 
-LibreOffice *liblibreoffice_hook(void)
+LibreOfficeG *libreoffice_hook_g(void)
 {
     if( !gImpl )
     {
         fprintf( stderr, "create libreoffice object\n" );
         gImpl = new LibLibreOffice_Impl();
     }
-    return static_cast< LibreOffice *>( gImpl );
+    return static_cast< LibreOfficeG *>( gImpl );
 }
 
-static void lo_destroy (LibreOffice *pThis)
+static void lo_destroy (LibreOfficeG *pThis)
 {
     LibLibreOffice_Impl *pLib = static_cast< LibLibreOffice_Impl *>( pThis );
     delete pLib;

@@ -9,7 +9,7 @@
 
 extern "C" int lo_demo_1 ()
 {
-    GoLibreOffice *pOffice = lo_cpp_init( "/usr/local/lib/libreoffice/program" );
+    GoLibreOffice *pOffice = lo_cpp_init_g( "/usr/local/lib/libreoffice/program" );
     if( !pOffice )
     {
         fprintf( stderr, "Failed to initialize shared library\n" );

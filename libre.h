@@ -31,6 +31,7 @@ struct _LibreOfficeDocumentG {
 
 LibreOfficeG *libsoffice_init(const char *install_path);
 
+LibreOfficeG *libreoffice_hook_g(void);
 #ifdef __cplusplus 
   }
 #endif 

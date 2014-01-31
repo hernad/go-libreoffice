@@ -66,7 +66,7 @@ import (
 //  $W/UnpackedTarball/liborcus/src/liborcus/.libs/liborcus-0.6.a  $W/UnpackedTarball/liborcus/src/parser/.libs/liborcus-parser-0.6.a  
 func main() {
   fmt.Println("go-libreoffice")
-  C.lo_main()
+//  C.lo_main()
   C.lo_demo_1()
 //  C.calc_1()
 //  C.libre_main()

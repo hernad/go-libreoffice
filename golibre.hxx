@@ -47,14 +47,17 @@ public:
     inline char *getError() { return mpThis->getError( mpThis ); }
 };
 
-inline GoLibreOffice *lo_cpp_init( const char *install_path )
+inline GoLibreOffice *lo_cpp_init_g( const char *install_path )
 {
+
+    printf("lo_cpp_init_g start\n");    
     LibreOfficeG *pThis = libsoffice_init( install_path );
+
     if( !pThis || pThis->nSize == 0 ) {
-        printf("lo_cpp_init libsoffice_init vratio null ?!\n");
+        printf("lo_cpp_init_g libsoffice_init vratio null ?!\n");
         return NULL;
     }
-    printf("lo_cpp_init before return\n");
+    printf("lo_cpp_init_g before return\n");
     return new GoLibreOffice( pThis );
 }
 
