@@ -105,14 +105,58 @@
 #include <com/sun/star/lang/XMultiServiceFactory.hpp>
 #include <com/sun/star/lang/XMultiComponentFactory.hpp>
 
+
+#include <com/sun/star/awt/XTopWindow.hpp> 
+#include "com/sun/star/util/URLTransformer.hpp" 
+#include <com/sun/star/util/XURLTransformer.hpp> 
+#include <com/sun/star/util/XCloseable.hpp> 
+#include <com/sun/star/frame/XDispatchProvider.hpp> 
+#include <com/sun/star/lang/ServiceNotRegisteredException.hpp> 
+#include <com/sun/star/configuration/MissingBootstrapFileException.hpp> 
+#include <com/sun/star/configuration/InvalidBootstrapFileException.hpp> 
+#include <com/sun/star/configuration/InstallationIncompleteException.hpp> 
+#include <com/sun/star/configuration/backend/BackendSetupException.hpp> 
+#include <com/sun/star/configuration/backend/BackendAccessException.hpp> 
+#include <com/sun/star/task/theJobExecutor.hpp> 
+#include <com/sun/star/task/OfficeRestartManager.hpp> 
+#include <com/sun/star/task/XRestartManager.hpp> 
+#include <com/sun/star/document/XEventListener.hpp> 
+#include <com/sun/star/frame/theUICommandDescription.hpp> 
+#include <com/sun/star/ui/UIElementFactoryManager.hpp> 
+#include <com/sun/star/ui/WindowStateConfiguration.hpp> 
+#include <com/sun/star/frame/XUIControllerRegistration.hpp> 
+#include <com/sun/star/frame/ToolbarControllerFactory.hpp> 
+#include <com/sun/star/frame/PopupMenuControllerFactory.hpp> 
+#include <com/sun/star/office/Quickstart.hpp> 
+
+#include <comphelper/processfactory.hxx>
+#include <comphelper/synchronousdispatch.hxx>
+#include <com/sun/star/util/XCloseable.hpp>
+#include <com/sun/star/util/CloseVetoException.hpp>
+#include <com/sun/star/task/InteractionHandler.hpp>
+#include <com/sun/star/util/URL.hpp>
+#include <com/sun/star/frame/Desktop.hpp>
+#include <com/sun/star/container/XEnumeration.hpp>
+#include <com/sun/star/frame/XFramesSupplier.hpp>
+#include <com/sun/star/frame/XDispatch.hpp>
+#include <com/sun/star/frame/XComponentLoader.hpp>
+#include <com/sun/star/beans/PropertyValue.hpp>
+#include <com/sun/star/view/XPrintable.hpp>
+#include <com/sun/star/frame/XDispatchProvider.hpp>
+#include <com/sun/star/util/URLTransformer.hpp>
+#include <com/sun/star/util/XURLTransformer.hpp>
+#include <com/sun/star/document/MacroExecMode.hpp>
+#include <com/sun/star/document/UpdateDocMode.hpp>
+#include <com/sun/star/frame/XStorable.hpp>
+
 #include <string.h>
 #include <malloc.h>
 #include <assert.h>
 #include <math.h>
 #include <sys/time.h>
+
 #include <liblibreoffice.hxx>
 
-#include "go-libre.hxx"
 using namespace ::com::sun::star;
 using namespace ::com::sun::star::uno;
 
@@ -190,7 +234,47 @@ void init_lo() {
 
 }
 
-extern "C" void calc_1()
+using namespace ::com::sun::star::awt;
+using namespace ::com::sun::star::uno;
+using namespace ::com::sun::star::util;
+using namespace ::com::sun::star::lang;
+using namespace ::com::sun::star::beans;
+using namespace ::com::sun::star::frame;
+using namespace ::com::sun::star::document;
+using namespace ::com::sun::star::view;
+using namespace ::com::sun::star::task;
+//using namespace ::com::sun::star::system;
+using namespace ::com::sun::star::ui;
+using namespace ::com::sun::star::ui::dialogs;
+using namespace ::com::sun::star::container;
+
+extern "C" void calc_1() 
+{
+
+const sal_Char SUSPEND_QUICKSTARTVETO[] = "SuspendQuickstartVeto";
+
+Sequence < com::sun::star::beans::PropertyValue > args(1);
+args[0].Name = "Hidden";
+args[0].Value <<= sal_True;
+
+Reference< XDesktop2 > xDesktop = css::frame::Desktop::create( ::comphelper::getProcessComponentContext() );
+Reference< XPropertySet > xPropertySet(xDesktop, UNO_QUERY_THROW);
+xPropertySet->setPropertyValue( OUString(SUSPEND_QUICKSTARTVETO ), Any((sal_Bool)sal_True) );
+
+try {
+      Reference < ::com::sun::star::util::XCloseable > xDoc( xDesktop->loadComponentFromURL( OUString("private:factory/scalc"), OUString("test.ods"), 0, args ), UNO_QUERY_THROW );
+      xDoc->close( sal_True );
+
+} catch ( const com::sun::star::uno::Exception& )
+{
+    printf("ne mogu kreirati scalc\n");
+}
+
+printf("kreirao scalc doc\n");
+
+}
+
+extern "C" void calc_2()
 {
 
     //init_lo();
@@ -245,17 +329,6 @@ extern "C" int lo_main ()
 
     //start = getTimeMS();
 
-/*
-    if( argc < 2 ||
-        ( argc > 1 && ( !strcmp( argv[1], "--help" ) || !strcmp( argv[1], "-h" ) ) ) )
-        return help();
-
-    if (argv[1][0] != '/')
-    {
-        fprintf( stderr, "Absolute path required to libreoffice install\n" );
-        return 1;
-    }
-*/
 
     // shim.c
     LibLibreOffice *pOffice = lo_cpp_init( "/usr/local/lib/libreoffice/program" );
@@ -276,7 +349,6 @@ extern "C" int lo_main ()
     //fprintf( stderr, "init time: %ld ms\n", (end-start) );
     //start = end;
 
-    
 
     fprintf( stderr, "start to load document '%s'\n", "/home/bringout/test.ods" );
     LODocument *pDocument = pOffice->documentLoad(  "/home/bringout/test.ods" );
@@ -288,19 +360,6 @@ extern "C" int lo_main ()
         free (pError);
         return -1;
     }
-
-    //end = getTimeMS();
-    //fprintf( stderr, "load time: %ld ms\n", (end-start) );
-    //start = end;
-
-/*
-        // Force headless
-        rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "svp" );
-        InitVCL();
-        Application::EnableHeadlessMode(true);
-
-        ErrorHandler::RegisterDisplay( aBasicErrorFunc );
-*/
 
        const char *pFilter = NULL;
         pFilter = "pdf";
@@ -316,11 +375,6 @@ extern "C" int lo_main ()
             fprintf( stderr, "Save pdf succeeded\n" );
         }
   
-/*
-    if( argc > 3 )
-    {
-   }
-*/
     fprintf( stderr, "all tests passed.\n" );
 
     delete pDocument;

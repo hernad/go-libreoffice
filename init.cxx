@@ -367,7 +367,11 @@ lo_initialize( LibreOffice *pThis, const char *app_path )
         // Force headless
         rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "svp" );
         InitVCL();
+#ifdef GOLANG
+        Application::EnableHeadlessMode(false);
+#else
         Application::EnableHeadlessMode(true);
+#endif
 
         ErrorHandler::RegisterDisplay( aBasicErrorFunc );
 

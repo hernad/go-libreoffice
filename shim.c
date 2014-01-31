@@ -14,12 +14,10 @@
 
 #include <osl/module.h>
 #include <sal/types.h>
+
 #include <liblibreoffice.h>
 
 #include <dlfcn.h>
-#ifdef AIX
-#  include <sys/ldr.h>
-#endif
 
 #define TARGET_LIB SAL_MODULENAME( "sofficeapp" )
 

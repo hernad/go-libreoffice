@@ -93,38 +93,6 @@ extern "C" int DESKTOP_DLLPUBLIC soffice_main()
 
     printf("soffice_main-3\n");
     return SVMain();
-#if defined ANDROID
-    } catch (const ::com::sun::star::uno::Exception &e) {
-        LOGI("Unhandled UNO exception: '%s'",
-             OUStringToOString(e.Message, RTL_TEXTENCODING_UTF8).getStr());
-        throw; // to get exception type printed
-    }
-#endif
 }
-
-#if defined(ANDROID) || defined(IOS)
-
-#ifdef ANDROID
-extern "C" SAL_JNI_EXPORT void JNICALL
-Java_org_libreoffice_android_AppSupport_runMain(JNIEnv* /* env */,
-                                                jobject /* clazz */)
-#else
-extern "C"
-void
-touch_lo_runMain()
-#endif
-{
-    int nRet;
-    do {
-        nRet = soffice_main();
-#ifdef ANDROID
-        LOGI("soffice_main returned %d", nRet);
-#endif
-    } while (nRet == EXITHELPER_NORMAL_RESTART ||
-             nRet == EXITHELPER_CRASH_WITH_RESTART); // pretend to re-start.
-
-}
-
-#endif
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */

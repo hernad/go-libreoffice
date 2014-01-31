@@ -67,4 +67,7 @@ import (
 func main() {
   fmt.Println("go-libreoffice")
   C.lo_main()
+  C.lo_demo_1()
+//  C.calc_1()
+//  C.libre_main()
 }
