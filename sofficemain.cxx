@@ -28,38 +28,22 @@
 
 #include <rtl/bootstrap.hxx>
 #include <tools/extendapplicationenvironment.hxx>
+#include <tools/errinf.hxx>
 
-
-#ifdef ANDROID
-#  include <jni.h>
-#  include <android/log.h>
-#  include <salhelper/thread.hxx>
-
-#  define LOGTAG "LibreOffice/sofficemain"
-#  define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, LOGTAG, __VA_ARGS__))
-#endif
-
-#ifdef IOS
-#include <touch/touch.h>
-#endif
+#include "golibre.hxx"
 
 #include <stdio.h>
 
 int SVMain();
 
+
+
 extern "C" int DESKTOP_DLLPUBLIC soffice_main()
 {
 
     printf("start soffice_main\n");
-#if defined ANDROID
-    try {
-        rtl::Bootstrap::setIniFilename("file:///assets/program/lofficerc");
-#endif
 
-#ifndef GOLANG
     tools::extendApplicationEnvironment();
-#endif
-
     printf("soffice_main-2\n");
     SAL_INFO("desktop.app", "PERFORMANCE - enter Main()" );
 
@@ -92,6 +76,7 @@ extern "C" int DESKTOP_DLLPUBLIC soffice_main()
 #endif
 
     printf("soffice_main-3\n");
+
     return SVMain();
 }
 

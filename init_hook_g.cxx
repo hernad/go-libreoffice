@@ -124,7 +124,10 @@ extern "C" {
 
 SAL_DLLPUBLIC_EXPORT LibreOfficeG *liblibreoffice_hook_g(void);
 
+// destroy metod
 static void doc_destroy( LibreOfficeDocumentG *pThis );
+
+// save_as
 static int  doc_saveAs( LibreOfficeDocumentG *pThis, const char *pUrl, const char *pFormat );
 
 struct LibLODocument_Impl : public _LibreOfficeDocumentG
@@ -181,6 +184,7 @@ lo_documentLoad( LibreOfficeG *pThis, const char *pURL )
 
     OUString aURL = getAbsoluteURL( pURL );
 
+    // xContext, xSFactory, xFactory
     uno::Reference < css::frame::XDesktop2 > xComponentLoader =
             css::frame::Desktop::create(xContext);
 
@@ -362,17 +366,21 @@ lo_initialize( LibreOfficeG *pThis, const char *app_path )
         return 0;
 
     try {
+        printf("before initialize_uno\n");
         initialize_uno( aAppURL );
         force_c_locale();
 
+#if defined(GOLANG) && defined(LINUX) 
+        rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "gtk" );
+        InitVCL();
+        Application::EnableHeadlessMode(false);
+#else
         // Force headless
         rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "svp" );
         InitVCL();
-#ifdef GOLANG
-        Application::EnableHeadlessMode(false);
-#else
         Application::EnableHeadlessMode(true);
 #endif
+        
 
         ErrorHandler::RegisterDisplay( aBasicErrorFunc );
 
@@ -402,6 +410,6 @@ static void lo_destroy (LibreOfficeG *pThis)
     gImpl = NULL;
 }
 
-}
+}  // extern "C"
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
