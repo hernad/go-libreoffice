@@ -9,7 +9,8 @@ package main
   #cgo CXXFLAGS: -fvisibility=hidden   -Wall -Wendif-labels -Wextra -Wundef -Wunused-macros -fmessage-length=0 -fno-common -pipe  -fvisibility-inlines-hidden -fPIC -Wshadow -Woverloaded-virtual  -Wnon-virtual-dtor -std=gnu++11  -DEXCEPTIONS_ON -fexceptions -fno-enforce-eh-specs -O2
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/include
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/source/inc
-  #cgo CXXFLAGS: -I/data/dev/libreoffice/core//desktop/source/deployment/inc
+  #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/source/deployment/inc
+  #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/source/deployment/gui
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/sd/inc
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/inc
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/config_host
@@ -34,7 +35,7 @@ package main
   #cgo LDFLAGS: -lsofficeapp  -lfwelo -lfwilo -lfwklo -lfwllo -lfwmlo
   #cgo LDFLAGS: -lxmlreaderlo -lxmlscriptlo
   #cgo LDFLAGS: -lvclcanvaslo -lcppcanvaslo -lcanvastoolslo
-  #cgo LDFLAGS: -lvclplug_gtklo -lvclplug_svplo -ldesktop_detectorlo -ldesktop_detectorlo
+  #cgo LDFLAGS: -lvclplug_gtklo -lvclplug_svplo -ldesktop_detectorlo -ldeploymentmisclo
   #cgo LDFLAGS: -li18nutil -l:libicudata.so.52 -l:libicui18n.so.52 -l:libicuuc.so.52
   #cgo LDFLAGS: -luno_cppu -luno_cppuhelpergcc3 -lunoidllo  -luno_sal -luno_salhelpergcc3 -lbinaryurplo -lreglo -lstorelo
   #cgo LDFLAGS: -lsdlo -lsduilo -lsddlo -lsdfiltlo
@@ -67,6 +68,7 @@ import "C"
 
 import (
   "fmt"
+  "time"
 )
 
 //  $W/UnpackedTarball/liborcus/src/liborcus/.libs/liborcus-0.6.a  $W/UnpackedTarball/liborcus/src/parser/.libs/liborcus-parser-0.6.a  
@@ -83,13 +85,35 @@ func main() {
 
 //  C.calc_1()
 
-//    C.libre_main()
+
+    C.libre_main()
+
+/*
+    C.nuliraj_command_args() 
+    C.app_init(C.int(1))
+    writer()
+    //calc()
+    C.app_init(C.int(0))
+*/
+
+ 
+    fmt.Println("kraj priče")
+    time.Sleep(1 * 1e9)
 
 
-    C.nuliraj_command_args()
-    C.app_init()
-    C.open_calc()
-
-  //C.vcl_1_test()
+    //C.vcl_1_test()
     //C.sd_test_1()
+
+
+}
+
+
+func calc() {
+    fmt.Println("calc")
+    C.open_calc()  
+}
+
+func writer() {
+    fmt.Println("writer")
+    C.open_writer()
 }

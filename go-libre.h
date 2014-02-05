@@ -21,7 +21,8 @@ void osl_setCommandArgs (int argc, char ** argv);
 //void sd_test_1();
 
 extern void open_calc();
+extern void open_writer();
 
 extern void nuliraj_command_args();
 
-extern void app_init();
+void app_init(int init_vcl);

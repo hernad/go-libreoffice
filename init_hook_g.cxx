@@ -37,6 +37,7 @@
 #include <vcl/graphicfilter.hxx>
 #include <unotools/syslocaleoptions.hxx>
 
+//#include "go-libre.h"
 #include "libre.h"
 
 using namespace ::com::sun::star;
@@ -348,15 +349,24 @@ initialize_uno( const OUString &aAppURL )
 }
 
 
-extern "C" void app_init() {
+extern "C" void app_init(int init_vcl) {
 
+
+     if (init_vcl) {
         initialize_uno( "/usr/local/lib/libreoffice/program" );
         force_c_locale();
-
+        printf("app_init - true\n");
         rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "gtk" );
         InitVCL();
         Application::EnableHeadlessMode(false);
-
+     } else {
+        //printf("app_deinit - true\n");
+        //DeInitVCL();
+        //rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "gtk" );
+        //InitVCL();
+        //Application::EnableHeadlessMode(false);
+        Application::Execute();
+     }
 }
 
 static int
