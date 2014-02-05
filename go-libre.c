@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "go-libre.h"
+
 static int g_Exiting = 0;
 
 /* HACK: detect calls to xmlCleanupParser, which causes hard to debug crashes */
@@ -46,7 +48,8 @@ int libre_main()  {
 
 
     printf("osl_setCommandArgs 0\n"); 
-    osl_setCommandArgs (0,0);
+
+    nuliraj_command_args();
     printf("start libre_main\n"); 
     int ret = soffice_main();
 #ifdef DBG_UTIL

@@ -72,10 +72,24 @@ import (
 //  $W/UnpackedTarball/liborcus/src/liborcus/.libs/liborcus-0.6.a  $W/UnpackedTarball/liborcus/src/parser/.libs/liborcus-parser-0.6.a  
 func main() {
   fmt.Println("go-libreoffice")
+
+  fmt.Println("definisi urebootstrao varijablu kao npr URE_BOOTSTRAP=file:///usr/local/lib/libreoffice/program/fundamentalrc")
+
 //  C.lo_main() - ucitava shared library
-//  C.lo_demo_1()
+
+//    C.libre_bootstrap()
+
+    //C.nuliraj_command_args()
+
 //  C.calc_1()
-    C.libre_main()
+
+//    C.libre_main()
+
+
+    C.nuliraj_command_args()
+    C.app_init()
+    C.open_calc()
+
   //C.vcl_1_test()
     //C.sd_test_1()
 }

@@ -107,7 +107,7 @@ static OUString getUString( const char *str )
 }
 
 // Try to convert a relative URL to an absolute one
-static OUString getAbsoluteURL( const char *pURL )
+OUString getAbsoluteURL( const char *pURL )
 {
     OUString aURL( getUString( pURL ) );
     OUString sAbsoluteDocUrl, sWorkingDir, sDocPathUrl;
@@ -345,6 +345,18 @@ initialize_uno( const OUString &aAppURL )
 //    rtl::Bootstrap aDefaultVars;
 //    aDefaultVars.set(OUString("UserInstallation"), aAppURL + "../registry" );
     // configmgr setup ?
+}
+
+
+extern "C" void app_init() {
+
+        initialize_uno( "/usr/local/lib/libreoffice/program" );
+        force_c_locale();
+
+        rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "gtk" );
+        InitVCL();
+        Application::EnableHeadlessMode(false);
+
 }
 
 static int
