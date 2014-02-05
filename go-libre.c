@@ -17,10 +17,7 @@
  *   the License at http://www.apache.org/licenses/LICENSE-2.0 .
  */
 
-#include "sal/main.h"
-
-
-#include "sofficemain.h"
+#include <sofficemain.h>
 
 #ifdef GOLANG
 #ifdef __gnu_linux__
@@ -47,6 +44,9 @@ __attribute__ ((visibility("default"))) void xmlCleanupParser(void)
 
 int libre_main()  {
 
+
+    printf("osl_setCommandArgs 0\n"); 
+    osl_setCommandArgs (0,0);
     printf("start libre_main\n"); 
     int ret = soffice_main();
 #ifdef DBG_UTIL
@@ -57,5 +57,12 @@ int libre_main()  {
     return ret;
 }
 
+/*
+void print_oustring(OUString str) {
+
+     LOGI("Unhandled UNO exception: '%s'",
+             OUStringToOString(str, RTL_TEXTENCODING_UTF8).getStr());
+}
+*/
 
 /* vim:set shiftwidth=4 softtabstop=4 expandtab: */
