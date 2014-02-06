@@ -86,15 +86,17 @@ func main() {
 //  C.calc_1()
 
 
-    C.libre_main()
+//    fmt.Println("libreoffice main desktop application")
+//    C.libre_main()
 
-/*
+
+
     C.nuliraj_command_args() 
     C.app_init(C.int(1))
-    writer()
-    //calc()
+    //writer()
+    calc()
     C.app_init(C.int(0))
-*/
+
 
  
     fmt.Println("kraj priče")
