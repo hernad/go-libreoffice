@@ -73,6 +73,11 @@ import (
 
 //  $W/UnpackedTarball/liborcus/src/liborcus/.libs/liborcus-0.6.a  $W/UnpackedTarball/liborcus/src/parser/.libs/liborcus-parser-0.6.a  
 func main() {
+
+//  gtk_main("run-1");
+
+
+
   fmt.Println("go-libreoffice")
 
   fmt.Println("definisi urebootstrao varijablu kao npr URE_BOOTSTRAP=file:///usr/local/lib/libreoffice/program/fundamentalrc")
@@ -86,17 +91,17 @@ func main() {
 //  C.calc_1()
 
 
-//    fmt.Println("libreoffice main desktop application")
-//    C.libre_main()
+    fmt.Println("libreoffice main desktop application")
+    C.libre_main()
 
 
-
+/*
     C.nuliraj_command_args() 
     C.app_init(C.int(1))
     //writer()
     calc()
     C.app_init(C.int(0))
-
+*/
 
  
     fmt.Println("kraj priče")
@@ -105,6 +110,11 @@ func main() {
 
     //C.vcl_1_test()
     //C.sd_test_1()
+
+//    gtk_main("run-2");
+
+    fmt.Println("libreoffice main desktop application -2")
+    C.libre_main()
 
 
 }

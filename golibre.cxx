@@ -516,7 +516,9 @@ DeInitVCL();
 
 extern "C" void nuliraj_command_args()
 {
-  char *argv[] = {"calc", NULL}; 
+  //char * argv[] = { strdup("go-libre"), strdup("scalc")};
+  char * argv[] = { strdup("go-libreoffice")};
+
   osl_setCommandArgs (1, argv);
   return;
 }

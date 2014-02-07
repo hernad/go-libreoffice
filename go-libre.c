@@ -47,8 +47,7 @@ __attribute__ ((visibility("default"))) void xmlCleanupParser(void)
 int libre_main()  {
 
 
-    printf("osl_setCommandArgs 0\n"); 
-
+    printf("nuliram args\n"); 
     nuliraj_command_args();
     printf("start libre_main\n"); 
     int ret = soffice_main();
