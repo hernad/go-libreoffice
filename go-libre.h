@@ -7,8 +7,10 @@
 
 //void print_oustring(rtl::OUString str);
 
+extern int svdem();
 
 extern int libre_main();
+//extern int libre_main_2(int poziv);
 extern void calc_1();
 extern int lo_main(); 
 extern int lo_demo_1(); 
@@ -21,6 +23,7 @@ void osl_setCommandArgs (int argc, char ** argv);
 //void sd_test_1();
 
 extern void open_calc();
+extern void close_desktop();
 extern void open_writer();
 
 extern void nuliraj_command_args();

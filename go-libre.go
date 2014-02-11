@@ -9,6 +9,7 @@ package main
   #cgo CXXFLAGS: -fvisibility=hidden   -Wall -Wendif-labels -Wextra -Wundef -Wunused-macros -fmessage-length=0 -fno-common -pipe  -fvisibility-inlines-hidden -fPIC -Wshadow -Woverloaded-virtual  -Wnon-virtual-dtor -std=gnu++11  -DEXCEPTIONS_ON -fexceptions -fno-enforce-eh-specs -O2
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/include
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/source/inc
+  #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/source/app
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/source/deployment/inc
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/source/deployment/gui
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/sd/inc
@@ -23,9 +24,13 @@ package main
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/workdir/CustomTarget/officecfg/registry
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core//workdir/UnpackedTarball/mdds/include/
 
+  #cgo CXXFLAGS: -I/data/dev/libreoffice/core/sw/inc
+  #cgo CXXFLAGS: -I/data/dev/libreoffice/core/sw/source/ui/inc
+  #cgo CXXFLAGS: -I/data/dev/libreoffice/core/sw/source/core/inc
+
   #cgo LDFLAGS: -L/data/dev/libreoffice/core/workDir/LinkTarget/StaticLibrary 
   #cgo LDFLAGS: -L/data/dev/libreoffice/core/workDir/LinkTarget/Library 
-  #cgo LDFLAGS: -L/usr/local/lib/libreoffice/program 
+  #cgo LDFLAGS: -L/data/dev/libreoffice/core/instdir/program
   #cgo LDFLAGS: -L/data/dev/libreoffice/core/instdir/ure/lib
   #cgo LDFLAGS: -L/data/dev/libreoffice/core/instdir/sdk/lib
   #cgo LDFLAGS: -L/usr/local/lib/harbour 
@@ -78,7 +83,7 @@ func main() {
 
 
 
-  fmt.Println("go-libreoffice")
+  fmt.Println("===================== go-libreoffice =============================================")
 
   fmt.Println("definisi urebootstrao varijablu kao npr URE_BOOTSTRAP=file:///usr/local/lib/libreoffice/program/fundamentalrc")
 
@@ -91,14 +96,38 @@ func main() {
 //  C.calc_1()
 
 
-    fmt.Println("libreoffice main desktop application")
-    C.libre_main()
+//    fmt.Println("libreoffice main desktop application  (1)")
+//    C.libre_main()
 
 
 /*
     C.nuliraj_command_args() 
     C.app_init(C.int(1))
     //writer()
+    calc()
+    C.app_init(C.int(0))
+
+*/
+    C.svdem()
+
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("--------------------------- drugi poziv ------------------------------------------------------")
+
+    C.svdem()
+
+//    C.nuliraj_command_args()
+
+/*
+    C.close_desktop() 
+    C.app_init(C.int(1))
     calc()
     C.app_init(C.int(0))
 */
@@ -113,9 +142,18 @@ func main() {
 
 //    gtk_main("run-2");
 
-    fmt.Println("libreoffice main desktop application -2")
+/*
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("")
+    fmt.Println("=>>>============ libreoffice main desktop application -2 ========================================")
     C.libre_main()
-
+*/
 
 }
 

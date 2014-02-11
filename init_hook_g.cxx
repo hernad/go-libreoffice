@@ -349,6 +349,8 @@ initialize_uno( const OUString &aAppURL )
 }
 
 
+extern void close_desktop();
+
 extern "C" void app_init(int init_vcl) {
 
 
@@ -366,6 +368,8 @@ extern "C" void app_init(int init_vcl) {
         //InitVCL();
         //Application::EnableHeadlessMode(false);
         Application::Execute();
+        close_desktop();
+        DeInitVCL();
      }
 }
 

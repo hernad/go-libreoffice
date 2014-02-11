@@ -363,17 +363,20 @@ uno::Reference<text::XTextField> getNewField(const uno::Reference<lang::XMultiSe
 
 }
 
+static Reference < XDesktop2 > xDesktop;
+
 extern "C" void open_calc() 
 {
 
 Sequence < com::sun::star::beans::PropertyValue > args(0);
 
-Reference < XDesktop2 > xDesktop = css::frame::Desktop::create( ::comphelper::getProcessComponentContext() );
+Reference< XComponentContext > xContext = ::comphelper::getProcessComponentContext();
 
 //OUString aURL =  OUString("private:factory/scalc");
 
 OUString aURL = getAbsoluteURL( "/home/bringout/test.ods" );
       
+xDesktop = css::frame::Desktop::create( xContext );
 
 
 Reference < css::util::XCloseable > xComponent( xDesktop->loadComponentFromURL( aURL, "_blank", 0, args ), UNO_QUERY_THROW );
@@ -386,7 +389,7 @@ uno::Reference< sheet::XSpreadsheet > xSheet( xIndex->getByIndex(0), UNO_QUERY_T
 
 uno::Reference<lang::XMultiServiceFactory> xSM(xComponent, UNO_QUERY_THROW);
 
-for (int i=0;  i < 300; i++) {
+for (int i=0;  i < 20; i++) {
 	uno::Reference<table::XCell> xCell = xSheet->getCellByPosition(0, i);
 	uno::Reference<text::XText> xText(xCell, UNO_QUERY_THROW);
 	uno::Reference<text::XTextCursor> xCursor = xText->createTextCursor();
@@ -483,13 +486,21 @@ comphelper::setProcessServiceFactory(0);
 }
 
 
+extern "C" void close_desktop() {
+
+printf("xDesktop terminate!\n");
+xDesktop->terminate();
+
+}
+
+
 extern "C" void open_writer() 
 {
 
 
 Sequence < com::sun::star::beans::PropertyValue > args(0);
 
-Reference < XDesktop2 > xDesktop = css::frame::Desktop::create( ::comphelper::getProcessComponentContext() );
+xDesktop = css::frame::Desktop::create( ::comphelper::getProcessComponentContext() );
 
 //OUString aURL =  OUString("private:factory/writer");
 

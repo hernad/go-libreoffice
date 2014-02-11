@@ -60,6 +60,25 @@ int libre_main()  {
 }
 
 /*
+int soffice_main_2(int poziv);
+
+int libre_main_2(int poziv)  {
+
+
+    printf("nuliram args\n"); 
+    nuliraj_command_args();
+    printf("start libre_main\n"); 
+    int ret = soffice_main_2(poziv);
+#ifdef DBG_UTIL
+#ifdef __gnu_linux__
+    g_Exiting = 1;
+#endif
+#endif
+    return ret;
+}
+*/
+
+/*
 void print_oustring(OUString str) {
 
      LOGI("Unhandled UNO exception: '%s'",
