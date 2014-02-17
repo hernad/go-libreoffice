@@ -108,11 +108,11 @@
 #include <com/sun/star/configuration/InstallationIncompleteException.hpp> 
 #include <com/sun/star/configuration/backend/BackendSetupException.hpp> 
 #include <com/sun/star/configuration/backend/BackendAccessException.hpp> 
-#include <com/sun/star/task/theJobExecutor.hpp> 
+//#include <com/sun/star/task/theJobExecutor.hpp> 
 #include <com/sun/star/task/OfficeRestartManager.hpp> 
 #include <com/sun/star/task/XRestartManager.hpp> 
 #include <com/sun/star/document/XEventListener.hpp> 
-#include <com/sun/star/frame/theUICommandDescription.hpp> 
+//#include <com/sun/star/frame/theUICommandDescription.hpp> 
 #include <com/sun/star/ui/UIElementFactoryManager.hpp> 
 #include <com/sun/star/ui/WindowStateConfiguration.hpp> 
 #include <com/sun/star/frame/XUIControllerRegistration.hpp> 
@@ -143,8 +143,8 @@
 #include <svl/languageoptions.hxx>
 #include <svtools/javacontext.hxx>
 #include <com/sun/star/beans/XPropertySet.hpp>
-#include <com/sun/star/frame/theAutoRecovery.hpp>
-#include <com/sun/star/frame/theGlobalEventBroadcaster.hpp>
+//#include <com/sun/star/frame/theAutoRecovery.hpp>
+//#include <com/sun/star/frame/theGlobalEventBroadcaster.hpp>
 #include <com/sun/star/frame/SessionListener.hpp>
 #include <com/sun/star/frame/XSessionManagerListener.hpp>
 #include <com/sun/star/frame/XSynchronousDispatch.hpp>
@@ -168,7 +168,6 @@
 #include <com/sun/star/configuration/InstallationIncompleteException.hpp>
 #include <com/sun/star/configuration/backend/BackendSetupException.hpp>
 #include <com/sun/star/configuration/backend/BackendAccessException.hpp>
-#include <com/sun/star/task/theJobExecutor.hpp>
 #include <com/sun/star/task/OfficeRestartManager.hpp>
 
 #include <toolkit/helper/vclunohelper.hxx>
@@ -216,7 +215,7 @@
 #include "vcl/svapp.hxx"
 #include "vcl/msgbox.hxx"
 #include "com/sun/star/lang/XServiceInfo.hpp"
-#include "com/sun/star/task/XJobExecutor.hpp"
+//#include "com/sun/star/task/XJobExecutor.hpp"
 #include "com/sun/star/ui/dialogs/XAsynchronousExecutableDialog.hpp"
 
 #include <boost/optional.hpp>
@@ -229,9 +228,10 @@ using namespace ::dp_misc;
 
 //#include <sofficemain.h>
 
-extern "C" int lo_demo_1 ()
+extern "C" int lo_liblib_demo ()
 {
-    GoLibreOffice *pOffice = lo_cpp_init_g( "/usr/local/lib/libreoffice/program" );
+
+    GoLibreOffice *pOffice = lo_cpp_init_g( "/opt/knowhowERP/LO/lib/libreoffice/program" );
     if( !pOffice )
     {
         fprintf( stderr, "inicijalizacija neuspjesna\n" );
@@ -241,9 +241,9 @@ extern "C" int lo_demo_1 ()
  
 
     // This separate init is lame I think.
-    if( !pOffice->initialize( "/usr/local/lib/libreoffice/program"   ) )
+    if( !pOffice->initialize( "/opt/knowhowERP/LO/lib/libreoffice/program" ) )
     {
-        fprintf( stderr, "failed to initialize /usr/local/lib/libreoffice/program\n" );
+        fprintf( stderr, "failed to init program\n" );
         return -1;
     }
 

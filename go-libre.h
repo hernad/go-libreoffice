@@ -13,7 +13,7 @@ extern int libre_main();
 //extern int libre_main_2(int poziv);
 extern void calc_1();
 extern int lo_main(); 
-extern int lo_demo_1(); 
+extern int lo_liblib_demo(); 
 
 //extern int libre_bootstrap();
 

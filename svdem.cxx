@@ -47,6 +47,7 @@
 #include <com/sun/star/lang/XMultiServiceFactory.hpp>
 #include <com/sun/star/ucb/XContentProvider.hpp>
 #include <com/sun/star/ucb/XUniversalContentBroker.hpp>
+#include <com/sun/star/ucb/UniversalContentBroker.hpp>
 
 #include <vcl/svapp.hxx>
 #include <tools/resmgr.hxx>
@@ -81,28 +82,51 @@
 #include <tools/resmgr.hxx>
 #include <vcl/graphicfilter.hxx>
 #include <unotools/syslocaleoptions.hxx>
+#include <osl/mutex.hxx>
 
 
 using namespace ::com::sun::star;
 using namespace ::com::sun::star::uno;
 using namespace ::com::sun::star::lang;
 
+static uno::Reference<uno::XComponentContext> xContext;
+static uno::Reference<lang::XMultiComponentFactory> xFactory;
+static uno::Reference<lang::XMultiServiceFactory> xSFactory;
+static uno::Reference<uno::XInterface> xDesktop;
+
 // Forward declaration
 void Main();
 //void Main(uno::Reference < XDesktop2 > xDesk)
 
 // Wonder global state ...
-static uno::Reference<css::uno::XComponentContext> xContext;
-static uno::Reference<css::lang::XMultiServiceFactory> xSFactory;
-static uno::Reference<css::lang::XMultiComponentFactory> xFactory;
+//static uno::Reference<css::uno::XComponentContext> xContext;
+//static uno::Reference<css::lang::XMultiServiceFactory> xSFactory;
+//static uno::Reference<css::lang::XMultiComponentFactory> xFactory;
 
 static int already_started = 0;
+
+osl::Mutex& getMutex()
+{
+    static osl::Mutex* pMutex = NULL;
+    if( pMutex == NULL )
+    {
+        osl::MutexGuard aGuard( osl::Mutex::getGlobalMutex() );
+        if( pMutex == NULL )  {
+            printf("kreiram pMutex\n");
+            static osl::Mutex aMutex;
+            pMutex = &aMutex;
+        }
+    }
+    return *pMutex;
+}
+
 
 extern "C" int svdem()
 //SAL_IMPLEMENT_MAIN()
 {
 //    printf("svdem -1\n");
 //    tools::extendApplicationEnvironment();
+
 
     rtl::Bootstrap::setIniFilename( "file:///opt/knowhowERP/LO/lib/libreoffice/program/fundamentalrc" );
 
@@ -111,19 +135,35 @@ extern "C" int svdem()
                          "res:${BRAND_BASE_DIR}/" LIBO_SHARE_FOLDER "/registry "
                          );
 
+
+    osl::Guard<osl::Mutex> aGuard( getMutex() );
+
+     if (!xContext.is()) {
+       xContext = cppu::defaultBootstrap_InitialComponentContext();
+    }
+
+     xFactory = xContext->getServiceManager();
+     xSFactory = uno::Reference<lang::XMultiServiceFactory> (xFactory, uno::UNO_QUERY_THROW);
+     comphelper::setProcessServiceFactory(xSFactory);
+
+     ::ucb::UniversalContentBroker::create(comphelper::getProcessComponentContext() );
+
+     
     //if (!xContext.is()) {
     //   delete &xContext;
 
-   
+ /*  
       xContext = cppu::defaultBootstrap_InitialComponentContext();
       fprintf( stderr, "Uno initialized %d\n", xContext.is() );
 
       xFactory = xContext->getServiceManager();
       xSFactory = uno::Reference<lang::XMultiServiceFactory>(xFactory, uno::UNO_QUERY_THROW);
       comphelper::setProcessServiceFactory(xSFactory);
+*/
     //}
 
     //if (!already_started) {
+/*
      OUString aLangISO( "en-US" );
      LanguageTag aLocale( aLangISO );
 
@@ -135,9 +175,12 @@ extern "C" int svdem()
     //}
 
     xContext = ::comphelper::getProcessComponentContext();
-      printf("svdem before initvcl\n");
+*/
+
+    printf("svdem before initvcl\n");
     InitVCL();
-    printf("svdem -4\n");
+
+        printf("svdem -4\n");
     ::Main();
     printf("before deinitvcl\n");
 
@@ -253,11 +296,9 @@ void MyWin::Resize()
 #include <com/sun/star/configuration/InstallationIncompleteException.hpp> 
 #include <com/sun/star/configuration/backend/BackendSetupException.hpp> 
 #include <com/sun/star/configuration/backend/BackendAccessException.hpp> 
-#include <com/sun/star/task/theJobExecutor.hpp> 
 #include <com/sun/star/task/OfficeRestartManager.hpp> 
 #include <com/sun/star/task/XRestartManager.hpp> 
 #include <com/sun/star/document/XEventListener.hpp> 
-#include <com/sun/star/frame/theUICommandDescription.hpp> 
 #include <com/sun/star/ui/UIElementFactoryManager.hpp> 
 #include <com/sun/star/ui/WindowStateConfiguration.hpp> 
 #include <com/sun/star/frame/XUIControllerRegistration.hpp> 
@@ -288,8 +329,6 @@ void MyWin::Resize()
 #include <svl/languageoptions.hxx>
 #include <svtools/javacontext.hxx>
 #include <com/sun/star/beans/XPropertySet.hpp>
-#include <com/sun/star/frame/theAutoRecovery.hpp>
-#include <com/sun/star/frame/theGlobalEventBroadcaster.hpp>
 #include <com/sun/star/frame/SessionListener.hpp>
 #include <com/sun/star/frame/XSessionManagerListener.hpp>
 #include <com/sun/star/frame/XSynchronousDispatch.hpp>
@@ -313,7 +352,6 @@ void MyWin::Resize()
 #include <com/sun/star/configuration/InstallationIncompleteException.hpp>
 #include <com/sun/star/configuration/backend/BackendSetupException.hpp>
 #include <com/sun/star/configuration/backend/BackendAccessException.hpp>
-#include <com/sun/star/task/theJobExecutor.hpp>
 #include <com/sun/star/task/OfficeRestartManager.hpp>
 
 
@@ -360,10 +398,10 @@ void show_license();
 void Main()
 {
 
+    
     MyWin aMainWin( NULL, WB_APP | WB_STDWORK );
     aMainWin.SetText(OUString("VCL demo window"));
     aMainWin.Show();
-
     //Sequence < com::sun::star::beans::PropertyValue > args(0);
 
     show_license();
@@ -442,8 +480,19 @@ using namespace ::com::sun::star::document;
 /// Displays CREDITS or LICENSE in any of the available version
 static void showDocument( const char* pBaseName )
 {
-    try {
-        Reference < XDesktop2 > xDesktop = Desktop::create( ::comphelper::getProcessComponentContext() );
+    //try {
+
+
+static uno::Reference<frame::XComponentLoader> xLoader;
+static uno::Reference<lang::XComponent> xComponent;
+
+
+        osl::Guard<osl::Mutex> aGuard( getMutex() );
+xDesktop = xFactory->createInstanceWithContext(OUString("com.sun.star.frame.Desktop"), xContext);
+xLoader = frame::Desktop::create(xContext);
+
+
+//        Reference < XDesktop2 > xDesktop = Desktop::create( ::comphelper::getProcessComponentContext() );
         Sequence < com::sun::star::beans::PropertyValue > args(2);
         args[0].Name = "ViewOnly";
         args[0].Value <<= sal_True;
@@ -454,12 +503,23 @@ static void showDocument( const char* pBaseName )
         if ( checkURL ( pBaseName, ".fodt", aURL ) ||
              checkURL ( pBaseName, ".html", aURL ) ||
              checkURL ( pBaseName, "", aURL ) ) {
-            xDesktop->loadComponentFromURL( aURL, OUString("_blank"), 0, args );
 
-            xDesktop->terminate(); 
+
+
+             xComponent.set(xLoader->loadComponentFromURL(aURL, OUString("_blank"), 0, args));
+
+             if (xComponent.get()) {
+                 printf("URL load uspjesan valjda\n");
+             } else
+                 printf("URL load neuspjesan\n");
+             
+              xComponent->dispose();
+              xComponent.clear();
+
         }
-    } catch (const ::com::sun::star::uno::Exception &) {
-    }
+    //} catch (const ::com::sun::star::uno::Exception &) {
+    //       printf("negdje imamo exception !\n");
+    //}
 
 }
 

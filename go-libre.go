@@ -74,6 +74,7 @@ import "C"
 import (
   "fmt"
   "time"
+  "os/exec"
 )
 
 //  $W/UnpackedTarball/liborcus/src/liborcus/.libs/liborcus-0.6.a  $W/UnpackedTarball/liborcus/src/parser/.libs/liborcus-parser-0.6.a  
@@ -100,15 +101,15 @@ func main() {
 //    C.libre_main()
 
 
-/*
     C.nuliraj_command_args() 
+/*
     C.app_init(C.int(1))
     //writer()
     calc()
     C.app_init(C.int(0))
 
 */
-    C.svdem()
+//    C.svdem()
 
     fmt.Println("")
     fmt.Println("")
@@ -121,7 +122,7 @@ func main() {
     fmt.Println("")
     fmt.Println("--------------------------- drugi poziv ------------------------------------------------------")
 
-    C.svdem()
+//    C.svdem()
 
 //    C.nuliraj_command_args()
 
@@ -132,7 +133,16 @@ func main() {
     C.app_init(C.int(0))
 */
 
- 
+    C.lo_liblib_demo()
+
+    out, err := exec.Command("mv", "test.pdf", "test_0.pdf").Output()
+    if err != nil {
+           fmt.Println("mv neuspjesno!")
+    }
+    fmt.Println("output", out)
+
+    C.lo_liblib_demo()
+
     fmt.Println("kraj priče")
     time.Sleep(1 * 1e9)
 

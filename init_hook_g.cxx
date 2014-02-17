@@ -355,7 +355,7 @@ extern "C" void app_init(int init_vcl) {
 
 
      if (init_vcl) {
-        initialize_uno( "/usr/local/lib/libreoffice/program" );
+        initialize_uno( "/opt/knowhowERP/LO/lib/libreoffice/program" );
         force_c_locale();
         printf("app_init - true\n");
         rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "gtk" );
