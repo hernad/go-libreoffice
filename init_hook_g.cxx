@@ -397,9 +397,9 @@ lo_initialize( LibreOfficeG *pThis, const char *app_path )
         force_c_locale();
 
 #if defined(GOLANG) && defined(LINUX) 
-        rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "gtk" );
+        //rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "svp" );
         InitVCL();
-        Application::EnableHeadlessMode(false);
+        //Application::EnableHeadlessMode(false);
 #else
         // Force headless
         rtl::Bootstrap::set( "SAL_USE_VCLPLUGIN", "svp" );

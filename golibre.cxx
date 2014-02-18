@@ -88,6 +88,8 @@
 #include <com/sun/star/ucb/XUniversalContentBroker.hpp>
 
 #include <vcl/svapp.hxx>
+#include "vcl/lazydelete.hxx"
+
 #include <tools/resmgr.hxx>
 #include <vcl/graphicfilter.hxx>
 #include <unotools/syslocaleoptions.hxx>
@@ -224,14 +226,167 @@
 #include "dp_gui_dialog2.hxx"
 #include "dp_gui_extensioncmdqueue.hxx"
 
+#include "vcl/svapp.hxx"
+#include "vcl/msgbox.hxx"
+
+#include "vcl/svapp.hxx"
+#include <svdata.hxx>
+#include "vcl/window.hxx"
+#include "vcl/timer.hxx"
+#include "vcl/solarmutex.hxx"
+
+
 using namespace ::dp_misc;
 
 //#include <sofficemain.h>
 
+class MyApp : public Application, private boost::noncopyable
+{
+public:
+    MyApp();
+    virtual ~MyApp();
+
+    // Application
+    virtual int Main();
+    virtual void DeInit();
+    virtual void Execute2();
+    virtual void Yield2();
+
+};
+
+//______________________________________________________________________________
+MyApp::~MyApp()
+{
+   printf("MyApp destruktor .......................!!!!!!!!!!!!!!!!!!................!\n");
+}
+
+//______________________________________________________________________________
+MyApp::MyApp()
+{
+   printf("MyApp konstruktor .......................!!!!!!!!!!!!!!!!!!................!\n");
+}
+
+//______________________________________________________________________________
+int MyApp::Main()
+{
+    return EXIT_SUCCESS;
+}
+
+void MyApp::DeInit()
+{
+   printf("FAKE MyApp Deinit .......................!!!!!!!!!!!!!!!!!!................!\n");
+   return;
+
+   printf("MyApp Deinit .......................!!!!!!!!!!!!!!!!!!................!\n");
+
+    css::uno::Reference< css::uno::XComponentContext > context(
+        comphelper::getProcessComponentContext());
+    dp_misc::disposeBridges(context);
+    css::uno::Reference< css::lang::XComponent >(
+        context, css::uno::UNO_QUERY_THROW)->dispose();
+    comphelper::setProcessServiceFactory(0);
+   printf("MyApp Deinit kraj.......................!!!!!!!!!!!!!!!!!!................!\n");
+
+}
+void MyApp::Execute2()
+{
+       printf(">>>>>>>>>>>>>>>>>> MyApp Execute ...........................--------------------------\n");
+
+       ImplSVData* pSVData = ImplGetSVData();
+       pSVData->maAppData.mbInAppExecute = sal_True;
+
+       while ( !pSVData->maAppData.mbAppQuit )
+             this->Yield2();
+
+       pSVData->maAppData.mbInAppExecute = sal_False;
+
+}
+
+
+#include "salinst.hxx"
+
+inline void ImplYield( bool i_bWait, bool i_bAllEvents )
+{
+ImplSVData* pSVData = ImplGetSVData();
+
+// run timers that have timed out
+if ( !pSVData->mbNoCallTimer )
+while ( pSVData->mbNotAllTimerCalled )
+
+   Timer::ImplTimerCallbackProc();
+
+    pSVData->maAppData.mnDispatchLevel++;
+// do not wait for events if application was already quit; in that
+// case only dispatch events already available
+// do not wait for events either if the app decided that it is too busy for timers
+// (feature added for the slideshow)
+
+
+    pSVData->mpDefInst->Yield( i_bWait && !pSVData->maAppData.mbAppQuit && !pSVData->maAppData.mbNoYield, i_bAllEvents );
+     pSVData->maAppData.mnDispatchLevel--;
+
+//DBG_TESTSOLARMUTEX(); // must be locked on return from Yield
+
+// flush lazy deleted objects
+    if( pSVData->maAppData.mnDispatchLevel == 0 )
+          vcl::LazyDelete::flush();
+
+// the system timer events will not necessarily come in in non waiting mode
+// e.g. on OS X; need to trigger timer checks manually
+     if( pSVData->maAppData.mbNoYield && !pSVData->mbNoCallTimer )
+     {
+        do
+           {
+              Timer::ImplTimerCallbackProc();
+           }
+       while( pSVData->mbNotAllTimerCalled );
+     }
+
+    // call post yield listeners
+    if( pSVData->maAppData.mpPostYieldListeners )
+    pSVData->maAppData.mpPostYieldListeners->callListeners( NULL );
+    
+
+
+     
+}
+
+void MyApp::Yield2()
+{
+     ImplYield( true, false );
+}
+
+
+static int already_started = 0;
+static GoLibreOffice *pOffice;
+
 extern "C" int lo_liblib_demo ()
 {
 
-    GoLibreOffice *pOffice = lo_cpp_init_g( "/opt/knowhowERP/LO/lib/libreoffice/program" );
+    //::std::auto_ptr<Application> app;
+    MyApp *app = new MyApp; 
+    //app->reset();
+    app->Init();
+
+
+if (already_started == 0) {
+    pOffice = lo_cpp_init_g( "/opt/knowhowERP/LO/lib/libreoffice/program" );
+
+    
+   app->SetDisplayName( OUString(" XXX"));
+   //app->SetDisplayName( utl::ConfigManager::getProductName() + OUString(" XXX"));
+/*
+    AllSettings as = app->GetSettings();
+    as.SetUILanguageTag( LanguageTag( utl::ConfigManager::getLocale() ).makeFallback() );
+    app->SetSettings( as );
+    app->SetDisplayName(
+                utl::ConfigManager::getProductName() +
+                OUString(" ") +
+                utl::ConfigManager::getProductVersion());
+    ExtensionCmdQueue::syncRepositories( m_xComponentContext );
+*/
+
+
     if( !pOffice )
     {
         fprintf( stderr, "inicijalizacija neuspjesna\n" );
@@ -247,6 +402,8 @@ extern "C" int lo_liblib_demo ()
         return -1;
     }
 
+}
+/*
     fprintf( stderr, "start to load document '%s'\n", "/home/bringout/test.ods" );
     GoLODocument *pDocument = pOffice->documentLoad(  "/home/bringout/test.ods" );
     if( !pDocument )
@@ -274,11 +431,17 @@ extern "C" int lo_liblib_demo ()
      {
             fprintf( stderr, "Save pdf  ok\n" );
      }
+*/
   
+    app->ShowNativeErrorBox(OUString("star app"), OUString("x2222222"));
+    //app->Execute2();
+    app->DeInit();
 
-    delete pDocument;
-    delete pOffice;
 
+//    delete pDocument;
+//    delete pOffice;
+
+    already_started = 1;
     return 0;
 }
 

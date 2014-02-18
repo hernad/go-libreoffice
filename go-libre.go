@@ -8,6 +8,7 @@ package main
   #cgo CXXFLAGS: -DRTL_USING   -DSC_DLLIMPLEMENTATION  -DSYSTEM_LIBXML   -DHAVE_GCC_VISIBILITY_FEATURE 
   #cgo CXXFLAGS: -fvisibility=hidden   -Wall -Wendif-labels -Wextra -Wundef -Wunused-macros -fmessage-length=0 -fno-common -pipe  -fvisibility-inlines-hidden -fPIC -Wshadow -Woverloaded-virtual  -Wnon-virtual-dtor -std=gnu++11  -DEXCEPTIONS_ON -fexceptions -fno-enforce-eh-specs -O2
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/include
+  #cgo CXXFLAGS: -I/data/dev/libreoffice/core/vcl/inc
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/source/inc
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/source/app
   #cgo CXXFLAGS: -I/data/dev/libreoffice/core/desktop/source/deployment/inc
