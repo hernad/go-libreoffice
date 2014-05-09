@@ -252,6 +252,7 @@ public:
     virtual void Execute2();
     virtual void Yield2();
     virtual void Macro();
+    virtual sal_Bool  QueryExit();
 
 };
 
@@ -259,6 +260,24 @@ public:
 MyApp::~MyApp()
 {
    printf("MyApp destruktor .......................!!!!!!!!!!!!!!!!!!................!\n");
+
+/*
+    ImplDeInitSVData();
+    //DeInitSalData();
+    ImplGetSVData()->mpApp = NULL;
+    ImplDestroySVData();
+    //GlobalDeInitTools();
+*/
+
+}
+
+sal_Bool MyApp::QueryExit() {
+   
+    printf("MyApp QUERYEXITTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT .......................!!!!!!!!!!!!!!!!!!................!\n");
+
+    this->ShowNativeErrorBox(OUString("nema izlaska"), OUString("x2222222"));
+    return sal_True;
+
 }
 
 //______________________________________________________________________________
@@ -293,12 +312,132 @@ void MyApp::Execute2()
 {
        printf(">>>>>>>>>>>>>>>>>> MyApp Execute ...........................--------------------------\n");
 
+       printf("Execute2-1\n");
        ImplSVData* pSVData = ImplGetSVData();
+printf("Execute2-2\n");
+
        pSVData->maAppData.mbInAppExecute = sal_True;
 
-       while ( !pSVData->maAppData.mbAppQuit )
-             this->Yield2();
 
+/*
+
+#define DECL_LINK( Method, ArgType ) \
+    long Method( ArgType ); \
+    static long LinkStub##Method( void* pThis, void* )
+
+#define LINK( Inst, Class, Member ) \
+    Link( (Class*)Inst, (PSTUB)&Class::LinkStub##Member )
+
+#define STATIC_LINK( Inst, Class, Member ) \
+    Link( (Class*)Inst, (PSTUB)&Class::Member )
+
+
+svapp.cxx ima:
+IMPL_STATIC_LINK_NOINSTANCE( ImplSVAppData, ImplQuitMsg, void*, EMPTYARG )
+{
+    ImplGetSVData()->maAppData.mbAppQuit = sal_True;
+    return 0;
+}
+
+void Application::Quit()
+{
+    printf("FAKE !!!!!!!!!!!!!!!!!!!!!!!!!!11Application quit\n");
+    //Application::PostUserEvent( STATIC_LINK( NULL, ImplSVAppData, ImplQuitMsg ) );
+}
+
+stvar se dešava u PostEvent
+unx/gtk/window/gtksalframe.cxx
+
+a on delegeira 
+
+SalSession
+SessionManager-u (sm.cxx)
+
+SessionManagerClient
+
+
+#define LINK( Inst, Class, Member ) \
+    Link( (Class*)Inst, (PSTUB)&Class::LinkStub##Member )
+
+SalGenericDisplay::SendInternalEvent (this=0x102a000, pFrame=0x12c2a20, pData=0x1293b00, nEvent=22)
+    at /data/dev/libreoffice/core/vcl/generic/app/gendisp.cxx:100
+
+gtkdata.cxx	    GetGtkSalData()->PostUserEvent();
+
+GtkSalFrame::PostEvent
+
+SfxTerminateListener_Impl::notifyTermination
+
+/data/dev/libreoffice/core/workdir/UnoApiHeadersTarget/offapi/normal/com/sun/star/document/EventObject.hdl
+
+SfxTerminateListener_Impl::notifyTermination (this=0x7fffd91bdb48, aEvent=...)
+    at /data/dev/libreoffice/core/sfx2/source/appl/appinit.cxx:115
+115	    css::uno::Reference< css::document::XEventListener > xGlobalBroadcaster(css::frame::GlobalEventBroadcaster::create(xContext), css::uno::UNO_QUERY_THROW);
+
+
+SfxTerminateListener_Impl::notifyTermination (this=0x7fffd91bdb48, aEvent=...)
+    at /data/dev/libreoffice/core/sfx2/source/appl/appinit.cxx:106
+106	    SolarMutexGuard aGuard;
+(gdb) s
+SolarMutexGuard::~SolarMutexGuard (this=0x7fffffffd280, __in_chrg=<optimized out>)
+    at /data/dev/libreoffice/core/include/vcl/svapp.hxx:431
+431	        m_solarMutex.release();
+(gdb) s
+GtkYieldMutex::release (this=0xfe5fd0) at /data/dev/libreoffice/core/vcl/unx/gtk/app/gtkinst.cxx:307
+307	    SalYieldMutex::release();
+(gdb) s
+SalYieldMutex::release (this=0xfe5fd0) at /data/dev/libreoffice/core/vcl/generic/app/geninst.cxx:56
+56	    OSL_ENSURE(mnCount > 0, "SalYieldMutex::release() called with zero count");
+(gdb) s
+57	    if ( mnThreadId == osl::Thread::getCurrentIdentifier() )
+(gdb) s
+osl::Thread::getCurrentIdentifier () at /data/dev/libreoffice/core/include/osl/thread.hxx:140
+140	        return osl_getThreadIdentifier(0);
+(gdb) s
+osl_getThreadIdentifier (Thread=0x0) at /data/dev/libreoffice/core/sal/osl/unx/thread.c:641
+641	    Thread_Impl* pImpl= (Thread_Impl*)Thread
+
+
+....
+
+
+vcl::SolarMutexObject::release (this=0xfe5fd0) at /data/dev/libreoffice/core/vcl/source/app/solarmutex.cxx:46
+46	}
+(gdb) s
+SalYieldMutex::release (this=0xfe5fd0) at /data/dev/libreoffice/core/vcl/generic/app/geninst.cxx:64
+64	}
+(gdb) s
+GtkYieldMutex::release (this=0xfe5fd0) at /data/dev/libreoffice/core/vcl/unx/gtk/app/gtkinst.cxx:308
+308	}
+
+
+    at /data/dev/libreoffice/core/sfx2/source/appl/appinit.cxx:122
+122	    Application::Quit();
+(gdb) list
+117	    css::document::EventObject aEvent2;
+118	    aEvent2.EventName = "OnCloseApp";
+119	    xGlobalBroadcaster->notifyEvent(aEvent2);
+120	
+121	    delete pApp;
+122	    Application::Quit();
+123	}
+
+*/
+
+//printf("Application::Quit obara GOLANG app\n");
+
+pSVData->maAppData.mbAppQuit = sal_False;
+
+printf("Execute2-3\n");
+       //int exei = 0;
+       while ( !pSVData->maAppData.mbAppQuit ) {
+             //printf("Execute2-4 %d\n", exei);
+             this->Yield2();
+             //exei--;
+             //if (exei < 0)
+             //     break;
+       }
+printf("Execute2-5\n");
        pSVData->maAppData.mbInAppExecute = sal_False;
 
 }
@@ -468,8 +607,15 @@ OUString sTestEnableRuntime(
 //"MsgBox  'This is a message about ...'\n"
 OUString sTestEnableRuntime(
    "Function doMain'\n"
+   "Dim mNoArgs()\n"
    "Dim Enable as Integer\n"
-   "MsgBox \"ok\", 64, \"Arr\"\n"
+   "Dim oDocument as Object\n"
+   "Dim oDesktop as Object\n"
+   "Dim sUrl as String\n"
+   //"MsgBox \"ok\", 64, \"Arr\"\n"
+   "sUrl = \"file:///home/bringout/test.ods\"\n"
+   "oDesktop  = createUnoService(\"com.sun.star.frame.Desktop\")\n"
+   "oDocument = oDesktop.LoadComponentFromURL(sUrl,\"_blank\",0,mNoArgs())\n"
    "Enable= 1\n"
    "doMain = 1\n"
    "End Function\n"
@@ -493,7 +639,7 @@ ImplSVData* pSVData = ImplGetSVData();
 
 // run timers that have timed out
 if ( !pSVData->mbNoCallTimer )
-while ( pSVData->mbNotAllTimerCalled )
+   while ( pSVData->mbNotAllTimerCalled )
 
    Timer::ImplTimerCallbackProc();
 
@@ -524,9 +670,10 @@ while ( pSVData->mbNotAllTimerCalled )
        while( pSVData->mbNotAllTimerCalled );
      }
 
+    //printf("FAKE YieldPostListeners\n");
     // call post yield listeners
     if( pSVData->maAppData.mpPostYieldListeners )
-    pSVData->maAppData.mpPostYieldListeners->callListeners( NULL );
+      pSVData->maAppData.mpPostYieldListeners->callListeners( NULL );
     
 
 
@@ -541,17 +688,21 @@ void MyApp::Yield2()
 
 static int already_started = 0;
 static GoLibreOffice *pOffice;
+static MyApp *app;
 
 extern "C" int lo_liblib_demo ()
 {
 
-    //::std::auto_ptr<Application> app;
-    MyApp *app = new MyApp; 
-    //app->reset();
-    app->Init();
+   
 
 
 if (already_started == 0) {
+
+    //::std::auto_ptr<Application> app;
+    app = new MyApp; 
+    //app->reset();
+    app->Init();
+
     pOffice = lo_cpp_init_g( "/opt/knowhowERP/LO/lib/libreoffice/program" );
 
     
@@ -567,7 +718,6 @@ if (already_started == 0) {
                 utl::ConfigManager::getProductVersion());
     ExtensionCmdQueue::syncRepositories( m_xComponentContext );
 */
-
 
     if( !pOffice )
     {
@@ -586,6 +736,7 @@ if (already_started == 0) {
 
 }
 
+/*
     fprintf( stderr, "start to load document '%s'\n", "/home/bringout/test.ods" );
     GoLODocument *pDocument = pOffice->documentLoad(  "/home/bringout/test.ods" );
     if( !pDocument )
@@ -614,19 +765,73 @@ if (already_started == 0) {
             fprintf( stderr, "Save pdf  ok\n" );
      }
 
+*/
 //if (!already_started)
     //app->ShowNativeErrorBox(OUString("star app"), OUString("x2222222"));
 
     app->Macro();
 
-    //app->Execute2();
+    app->Execute2();
     app->DeInit();
 
+
+/*
+
+svdata.hxx:
+
+struct ImplSVData
+    305 {
+    306     SalData*                mpSalData;
+    307     SalInstance*            mpDefInst;          // Default SalInstance
+    308     Application*            mpApp;              // pApp
+    309     WorkWindow*             mpDefaultWin;       // Default-Window
+    310     sal_Bool                    mbDeInit;             // Is VCL deinitializing
+    311     sal_uLong                   mnThreadCount;      // is VCL MultiThread enabled
+    312     ImplConfigData*         mpFirstConfigData;  // Zeiger auf ersten Config-Block
+    313     ImplTimerData*          mpFirstTimerData;   // list of all running timers
+    314     SalTimer*               mpSalTimer;         // interface to sal event loop/timers
+    315     SalI18NImeStatus*       mpImeStatus;        // interface to ime status window
+    316     SalSystem*              mpSalSystem;        // SalSystem interface
+    317     ResMgr*                 mpResMgr;           // SV-Resource-Manager
+    318     sal_uLong                   mnTimerPeriod;      // current timer period
+    319     sal_uLong                   mnTimerUpdate;      // TimerCallbackProcs on stack
+    320     sal_Bool                    mbNotAllTimerCalled;// sal_True: Es muessen noch Timer abgearbeitet werden
+    321     sal_Bool                    mbNoCallTimer;      // sal_True: No Timeout calls
+    322     ImplSVAppData           maAppData;          // indepen data for class Application
+    323     ImplSVGDIData           maGDIData;          // indepen data for Output classes
+    324     ImplSVWinData           maWinData;          // indepen data for Windows classes
+    325     ImplSVCtrlData          maCtrlData;         // indepen data for Control classes
+    326     ImplSVHelpData          maHelpData;         // indepen data for Help classes
+    327     ImplSVNWFData           maNWFData;
+    328     UnoWrapperBase*         mpUnoWrapper;
+    329     Window*                 mpIntroWindow;      // the splash screen
+    330     DockingManager*         mpDockingManager;
+    331     BlendFrameCache*        mpBlendFrameCache;
+    332     sal_Bool                mbIsTestTool;
+    333 
+    334     oslThreadIdentifier                     mnMainThreadId;
+    335     rtl::Reference< vcl::DisplayConnection >            mxDisplayConnection;
+    336 
+    337     ::com::sun::star::uno::Reference< ::com::sun::star::lang::XComponent > mxAccessBridge;
+    338     ::vcl::SettingsConfigItem*          mpSettingsConfigItem;
+    339     std::list< vcl::DeleteOnDeinitBase* >*   mpDeinitDeleteList;
+    340     boost::unordered_map< int, OUString >*     mpPaperNames;
+    341 };
+    342 
+
+
+
+    Map: A window has been mapped. (It is now visible on the screen).
+    *   Unmap: A window has been unmapped. (It is no longer visible on
+    *	    the screen).
+
+*/
     
 //    delete pDocument;
 //    delete pOffice;
 
     already_started = 1;
+    //delete app;
     return 0;
 }
 
